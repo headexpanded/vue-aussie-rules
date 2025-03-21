@@ -1,47 +1,108 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref, reactive, computed } from 'vue';
+import type { LoginForm, Player } from './types';
+import { api } from './services/api';
+import GameInterface from './components/GameInterface.vue';
+import LadderPrediction from './components/LadderPrediction.vue';
+
+const currentPlayer = ref<Player | null>(null);
+const loginForm = reactive<LoginForm>({
+  name: '',
+  email: '',
+});
+const error = ref<string>('');
+const currentRound = ref<number>(0);
+
+async function handleLogin() {
+  try {
+    error.value = '';
+    currentPlayer.value = await api.login(loginForm);
+    currentRound.value = await api.getCurrentRound();
+  } catch (e) {
+    error.value = 'Login failed. Please try again.';
+  }
+}
+
+const showLadderPrediction = computed(() => {
+  return currentRound.value === 8 || currentRound.value === 16;
+});
+
+const ladderPredictionRound = computed(() => {
+  return currentRound.value === 8 ? 16 : 24;
+});
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <div class="container">
+    <h1>AFL Predictions Game</h1>
+    
+    <div v-if="!currentPlayer" class="card">
+      <h2>Login</h2>
+      <form @submit.prevent="handleLogin">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            id="name"
+            v-model="loginForm.name"
+            type="text"
+            class="form-control"
+            required
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            v-model="loginForm.email"
+            type="email"
+            class="form-control"
+            required
+          />
+        </div>
+        
+        <div v-if="error" class="error">{{ error }}</div>
+        
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    
+    <div v-else>
+      <div class="header">
+        <h2>Welcome, {{ currentPlayer.name }}!</h2>
+        <p>Current Round: {{ currentRound }}</p>
+      </div>
+      
+      <GameInterface :player-id="currentPlayer.id" />
+      
+      <LadderPrediction
+        v-if="showLadderPrediction"
+        :player-id="currentPlayer.id"
+        :round-number="ladderPredictionRound"
+      />
+    </div>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
+<style>
+@import './assets/main.css';
+
+h1 {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-lg);
+  color: var(--primary-color);
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+h2 {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-md);
+  color: var(--primary-color);
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
 }
 </style>
