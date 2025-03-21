@@ -91,6 +91,7 @@ h1 {
   font-size: var(--font-size-lg);
   margin-bottom: var(--spacing-lg);
   color: var(--primary-color);
+  text-align: center;
 }
 
 h2 {
@@ -104,5 +105,21 @@ h2 {
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-lg);
+  width: 100%;
+  max-width: 1200px;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 }
 </style>
