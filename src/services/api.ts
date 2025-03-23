@@ -1,6 +1,7 @@
 import type { LoginForm, Player, Game, Prediction, PlayerStats, LadderPrediction, Team } from '../types';
 
-const API_BASE = 'http://192.168.88.182:3003/rules/api';
+const isDevelopment = process.env.NODE_ENV = 'development';
+const API_BASE = isDevelopment ? 'http://192.168.88.182:3003/rules/api' : '/rules/api';
 
 export const api = {
   async login(form: LoginForm): Promise<Player> {
