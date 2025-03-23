@@ -10,6 +10,7 @@ const props = defineProps<{
 const currentRound = ref<number>(0);
 const games = ref<Game[]>([]);
 const predictions = ref<Record<number, number>>({});
+const tempPredictions = ref<Record<number, number>>({});
 const playerStats = ref<PlayerStats[]>([]);
 const error = ref<string>('');
 
@@ -24,17 +25,24 @@ async function loadData() {
   }
 }
 
-async function submitPrediction(gameId: number, teamId: number) {
+function selectPrediction(gameId: number, teamId: number) {
+    tempPredictions.value[gameId] = teamId;
+    }
+
+async function submitAllPredictions() {
   try {
-    await api.submitPrediction({
-      player_id: props.playerId,
-      game_id: gameId,
-      predicted_winner_id: teamId,
-    });
-    predictions.value[gameId] = teamId;
+    submitError.value = '';
+    for (const [gameId, teamId] of Object.entries(tempPredictions.value)) {
+      await api.submitPrediction({
+        player_id: props.playerId,
+        game_id: parseInt(gameId),
+        predicted_winner_id: teamId
+      });
+    }
+    predictions.value = {...tempPredictions.value};
     await loadData(); // Reload stats
   } catch (e) {
-    error.value = 'Failed to submit prediction';
+    submitError.value = 'Failed to submit predictions';
   }
 }
 
@@ -44,6 +52,7 @@ onMounted(loadData);
 <template>
   <div class="game-container">
     <div v-if="error" class="error">{{ error }}</div>
+    <div v-if="submitError" class="error">{{ submitError }} </div>
     
     <div class="header">
       <h2>Round {{ currentRound }} Games</h2>
@@ -53,25 +62,32 @@ onMounted(loadData);
           <div class="game-teams">
             <button
               class="btn"
-              :class="{ 'btn-primary': predictions[game.id] === game.team1_id }"
-              @click="submitPrediction(game.id, game.team1_id)"
+              :class="{ 'btn-primary': tempPredictions[game.id] === game.team1_id }"
+              @click="selectPrediction(game.id, game.team1_id)"
             >
               {{ game.team1?.name }}
             </button>
             <span>vs</span>
             <button
               class="btn"
-              :class="{ 'btn-primary': predictions[game.id] === game.team2_id }"
-              @click="submitPrediction(game.id, game.team2_id)"
+              :class="{ 'btn-primary': tempPredictions[game.id] === game.team2_id }"
+              @click="selectPrediction(game.id, game.team2_id)"
             >
               {{ game.team2?.name }}
             </button>
           </div>
         </div>
       </div>
-    </div>
-    
-    <div class="stats-section">
+      <div class="submit-section">
+        <button
+          class="btn btn-primary submit-btn"
+          @click="submitAllPredictions"
+          :disabled="Object.keys(tempPredictions).length === 0"
+         >
+         Submit Predictions
+         </button>
+      </div>
+      <div class="stats-section">
       <h2>Player Statistics</h2>
       <div class="stats-grid">
         <div v-for="stat in playerStats" :key="stat.player.id" class="stat-card">
@@ -82,7 +98,7 @@ onMounted(loadData);
         </div>
       </div>
     </div>
-  
+    </div>
 </template>
 
 <style scoped>
@@ -155,5 +171,22 @@ h3 {
   font-size: var(--font-size-md);
   margin-bottom: var(--spacing-sm);
   color: var(--primary-color);
+}
+
+.submit-section {
+  display: flex;
+  justify-content: center;
+  margin: var(--spacing-md) 0;
+}
+
+.submit-btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-md);
+  min-width: 200px;
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style> 
