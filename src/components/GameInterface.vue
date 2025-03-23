@@ -1,93 +1,94 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import type { Game, Prediction, PlayerStats } from '../types';
-import { api } from '../services/api';
+import { ref, onMounted } from 'vue'
+import type { Game, PlayerStats } from '../types'
+import { api } from '../services/api'
 
 const props = defineProps<{
-  playerId: number;
-}>();
+  playerId: number
+}>()
 
-const currentRound = ref<number>(0);
-const games = ref<Game[]>([]);
-const predictions = ref<Record<number, number>>({});
-const tempPredictions = ref<Record<number, number>>({});
-const playerStats = ref<PlayerStats[]>([]);
-const error = ref<string>('');
+const currentRound = ref<number>(0)
+const games = ref<Game[]>([])
+const predictions = ref<Record<number, number>>({})
+const tempPredictions = ref<Record<number, number>>({})
+const playerStats = ref<PlayerStats[]>([])
+const error = ref<string>('')
+const submitError = ref<string>('')
 
 async function loadData() {
   try {
-    currentRound.value = await api.getCurrentRound();
-    games.value = await api.getGames(currentRound.value);
-    const stats = await api.getPlayerStats();
-    playerStats.value = stats;
+    currentRound.value = await api.getCurrentRound()
+    games.value = await api.getGames(currentRound.value)
+    const stats = await api.getPlayerStats()
+    playerStats.value = stats
   } catch (e) {
-    error.value = 'Failed to load game data';
+    error.value = 'Failed to load game data'
   }
 }
 
 function selectPrediction(gameId: number, teamId: number) {
-    tempPredictions.value[gameId] = teamId;
-    }
+  tempPredictions.value[gameId] = teamId
+}
 
 async function submitAllPredictions() {
   try {
-    submitError.value = '';
+    submitError.value = ''
     for (const [gameId, teamId] of Object.entries(tempPredictions.value)) {
       await api.submitPrediction({
         player_id: props.playerId,
         game_id: parseInt(gameId),
-        predicted_winner_id: teamId
-      });
+        predicted_winner_id: teamId,
+      })
     }
-    predictions.value = {...tempPredictions.value};
-    await loadData(); // Reload stats
+    predictions.value = { ...tempPredictions.value }
+    await loadData() // Reload stats
   } catch (e) {
-    submitError.value = 'Failed to submit predictions';
+    submitError.value = 'Failed to submit predictions'
   }
 }
 
-onMounted(loadData);
+onMounted(loadData)
 </script>
 
 <template>
   <div class="game-container">
     <div v-if="error" class="error">{{ error }}</div>
-    <div v-if="submitError" class="error">{{ submitError }} </div>
-    
+    <div v-if="submitError" class="error">{{ submitError }}</div>
+
     <div class="header">
       <h2>Round {{ currentRound }} Games</h2>
     </div>
-      <div class="games-grid">
-        <div v-for="game in games" :key="game.id" class="card">
-          <div class="game-teams">
-            <button
-              class="btn"
-              :class="{ 'btn-primary': tempPredictions[game.id] === game.team1_id }"
-              @click="selectPrediction(game.id, game.team1_id)"
-            >
-              {{ game.team1?.name }}
-            </button>
-            <span>vs</span>
-            <button
-              class="btn"
-              :class="{ 'btn-primary': tempPredictions[game.id] === game.team2_id }"
-              @click="selectPrediction(game.id, game.team2_id)"
-            >
-              {{ game.team2?.name }}
-            </button>
-          </div>
+    <div class="games-grid">
+      <div v-for="game in games" :key="game.id" class="card">
+        <div class="game-teams">
+          <button
+            class="btn"
+            :class="{ 'btn-primary': tempPredictions[game.id] === game.team1_id }"
+            @click="selectPrediction(game.id, game.team1_id)"
+          >
+            {{ game.team1?.name }}
+          </button>
+          <span>vs</span>
+          <button
+            class="btn"
+            :class="{ 'btn-primary': tempPredictions[game.id] === game.team2_id }"
+            @click="selectPrediction(game.id, game.team2_id)"
+          >
+            {{ game.team2?.name }}
+          </button>
         </div>
       </div>
-      <div class="submit-section">
-        <button
-          class="btn btn-primary submit-btn"
-          @click="submitAllPredictions"
-          :disabled="Object.keys(tempPredictions).length === 0"
-         >
-         Submit Predictions
-         </button>
-      </div>
-      <div class="stats-section">
+    </div>
+    <div class="submit-section">
+      <button
+        class="btn btn-primary submit-btn"
+        @click="submitAllPredictions"
+        :disabled="Object.keys(tempPredictions).length === 0"
+      >
+        Submit Predictions
+      </button>
+    </div>
+    <div class="stats-section">
       <h2>Player Statistics</h2>
       <div class="stats-grid">
         <div v-for="stat in playerStats" :key="stat.player.id" class="stat-card">
@@ -98,7 +99,7 @@ onMounted(loadData);
         </div>
       </div>
     </div>
-    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -139,7 +140,7 @@ onMounted(loadData);
   padding: var(--spacing-xs) var(--spacing-sm);
   font-size: var(--font-size-sm);
   min-height: 40px;
-  white-spae: normal;
+  white-space: normal;
   text-align: center;
 }
 
@@ -189,4 +190,4 @@ h3 {
   opacity: 0.5;
   cursor: not-allowed;
 }
-</style> 
+</style>
