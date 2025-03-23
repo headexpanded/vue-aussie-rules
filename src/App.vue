@@ -11,7 +11,7 @@ const loginForm = reactive<LoginForm>({
   email: '',
 });
 const error = ref<string>('');
-const currentRound = ref<number>(0);
+const currentRound = ref<number>(1);
 
 async function handleLogin() {
   try {
@@ -28,15 +28,15 @@ const showLadderPrediction = computed(() => {
 });
 
 const ladderPredictionRound = computed(() => {
-  return currentRound.value === 8 ? 16 : 24;
+  return currentRound.value === 8 ? 8 : 16;
 });
 </script>
 
 <template>
-  <div class="container">
+  <div class="app-container">
     <h1>AFL Predictions Game</h1>
     
-    <div v-if="!currentPlayer" class="card">
+    <div v-if="!currentPlayer" class="login-card card">
       <h2>Login</h2>
       <form @submit.prevent="handleLogin">
         <div class="form-group">
@@ -67,7 +67,7 @@ const ladderPredictionRound = computed(() => {
       </form>
     </div>
     
-    <div v-else>
+    <div v-else class="content-container">
       <div class="header">
         <h2>Welcome, {{ currentPlayer.name }}!</h2>
         <p>Current Round: {{ currentRound }}</p>
@@ -84,42 +84,54 @@ const ladderPredictionRound = computed(() => {
   </div>
 </template>
 
-<style>
+<style scoped>
 @import './assets/main.css';
+
+.app-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 h1 {
   font-size: var(--font-size-lg);
   margin-bottom: var(--spacing-lg);
   color: var(--primary-color);
   text-align: center;
+  width: 100%;
 }
 
-h2 {
-  font-size: var(--font-size-md);
-  margin-bottom: var(--spacing-md);
-  color: var(--primary-color);
+.login-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.content-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
-  width: 100%;
-  max-width: 1200px;
-}
-
-.container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  padding: var(--spacing);
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--spacing-md);
 }
 
 .card {
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
+  background: white;
+  padding: var(--spacing-md);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>

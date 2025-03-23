@@ -42,12 +42,13 @@ onMounted(loadData);
 </script>
 
 <template>
-  <div class="container">
+  <div class="game-container">
     <div v-if="error" class="error">{{ error }}</div>
     
-    <div class="card">
+    <div class="header">
       <h2>Round {{ currentRound }} Games</h2>
-      <div class="grid">
+    </div>
+      <div class="games-grid">
         <div v-for="game in games" :key="game.id" class="card">
           <div class="game-teams">
             <button
@@ -70,10 +71,10 @@ onMounted(loadData);
       </div>
     </div>
     
-    <div class="card">
+    <div class="stats-section">
       <h2>Player Statistics</h2>
-      <div class="grid">
-        <div v-for="stat in playerStats" :key="stat.player.id" class="card">
+      <div class="stats-grid">
+        <div v-for="stat in playerStats" :key="stat.player.id" class="stat-card">
           <h3>{{ stat.player.name }}</h3>
           <p>Wins: {{ stat.wins }}</p>
           <p>Losses: {{ stat.losses }}</p>
@@ -81,25 +82,73 @@ onMounted(loadData);
         </div>
       </div>
     </div>
-  </div>
+  
 </template>
 
 <style scoped>
+.game-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-sm);
+}
+
+.header {
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.games-grid {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin-bottom: var(--spacing-lg);
+}
+
+.game-card {
+  background: white;
+  padding: var(--spacing-sm);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 .game-teams {
   display: flex;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xs);
   align-items: center;
-  justify-content: center;
 }
 
 .game-teams .btn {
   flex: 1;
-  max-width: 200px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  min-height: 40px;
+  white-spae: normal;
+  text-align: center;
 }
 
 .game-teams span {
   font-weight: bold;
   color: var(--primary-color);
+  padding: 0 var(--spacing-xs);
+}
+
+.stats-section {
+  margin-top: var(--spacing-lg);
+}
+
+.stat-card {
+  background: white;
+  padding: var(--spacing-sm);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-size: var(--font-size-lg);
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
 }
 
 h3 {

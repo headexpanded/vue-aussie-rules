@@ -15,30 +15,8 @@ const error = ref<string>('');
 
 async function loadData() {
   try {
-    // In a real app, we'd get teams from the API
-    // For now, we'll use dummy data
-    teams.value = [
-      { id: 1, name: 'Adelaide' },
-      { id: 2, name: 'Brisbane Lions' },
-      { id: 3, name: 'Carlton' },
-      { id: 4, name: 'Collingwood' },
-      { id: 5, name: 'Essendon' },
-      { id: 6, name: 'Fremantle' },
-      { id: 7, name: 'Geelong' },
-      { id: 8, name: 'Gold Coast' },
-      { id: 9, name: 'Greater Western Sydney' },
-      { id: 10, name: 'Hawthorn' },
-      { id: 11, name: 'Melbourne' },
-      { id: 12, name: 'North Melbourne' },
-      { id: 13, name: 'Port Adelaide' },
-      { id: 14, name: 'Richmond' },
-      { id: 15, name: 'St Kilda' },
-      { id: 16, name: 'Sydney' },
-      { id: 17, name: 'West Coast' },
-      { id: 18, name: 'Western Bulldogs' },
-    ];
-    
-    allPredictions.value = await api.getLadderPredictions(props.roundNumber);
+    teams.value =  await api.getTeams();    
+   // allPredictions.value = await api.getLadderPredictions(props.roundNumber);
   } catch (e) {
     error.value = 'Failed to load ladder data';
   }
