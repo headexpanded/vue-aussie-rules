@@ -88,7 +88,7 @@ export const api = {
 		'Content-Type': 'application/json'
 		},
 	});
-    if (!repsonse.ok) throw new Error('Failed to get teams');
+    if (!response.ok) throw new Error('Failed to get teams');
 	return response.json();
    },
 };
