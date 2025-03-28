@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import type { Game, PlayerStats } from '../types'
+import type { Game, PlayerStats } from '@/types'
+import { onMounted, ref } from 'vue'
 import { api } from '../services/api'
 
 const props = defineProps<{
@@ -19,9 +19,8 @@ async function loadData() {
   try {
     currentRound.value = await api.getCurrentRound()
     games.value = await api.getGames(currentRound.value)
-    const stats = await api.getPlayerStats()
-    playerStats.value = stats
-  } catch (e) {
+    playerStats.value = await api.getPlayerStats()
+  } catch {
     error.value = 'Failed to load game data'
   }
 }
@@ -42,7 +41,7 @@ async function submitAllPredictions() {
     }
     predictions.value = { ...tempPredictions.value }
     await loadData() // Reload stats
-  } catch (e) {
+  } catch {
     submitError.value = 'Failed to submit predictions'
   }
 }

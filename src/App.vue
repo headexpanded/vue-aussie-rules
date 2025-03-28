@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { ref, reactive, computed } from 'vue';
 import type { LoginForm, Player } from './types';
 import { api } from './services/api';
@@ -9,20 +10,22 @@ import LadderPrediction from './components/LadderPrediction.vue';
 const authStore = useAuthStore();
 
 const currentPlayer = ref<Player | null>(null);
+
 const loginForm = reactive<LoginForm>({
   name: '',
   email: '',
-});
-const error = ref<string>('');
-const currentRound = ref<number>(1);
+})
+
+const error = ref<string>('')
+const currentRound = ref<number>(1)
 
 async function handleLogin() {
   try {
-    error.value = '';
-    currentPlayer.value = await api.login(loginForm);
-    currentRound.value = await api.getCurrentRound();
-  } catch (e) {
-    error.value = 'Login failed. Please try again.';
+    error.value = ''
+    currentPlayer.value = await api.login(loginForm)
+    currentRound.value = await api.getCurrentRound()
+  } catch {
+    error.value = 'Login failed. Please try again.'
   }
 }
 
@@ -43,57 +46,45 @@ async function checkSession() {
 }
 
 const showLadderPrediction = computed(() => {
-  return currentRound.value === 8 || currentRound.value === 16;
-});
+  return currentRound.value === 8 || currentRound.value === 16
+})
 
 const ladderPredictionRound = computed(() => {
-  return currentRound.value === 8 ? 8 : 16;
-});
+  return currentRound.value === 8 ? 8 : 16
+})
 </script>
 
 <template>
   <div class="app-container">
     <h1>AFL Predictions Game</h1>
-    
+
     <div v-if="!currentPlayer" class="login-card card">
       <h2>Login</h2>
       <form @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="name">Name</label>
-          <input
-            id="name"
-            v-model="loginForm.name"
-            type="text"
-            class="form-control"
-            required
-          />
+          <input id="name" v-model="loginForm.name" type="text" class="form-control" required />
         </div>
-        
+
         <div class="form-group">
           <label for="email">Email</label>
-          <input
-            id="email"
-            v-model="loginForm.email"
-            type="email"
-            class="form-control"
-            required
-          />
+          <input id="email" v-model="loginForm.email" type="email" class="form-control" required />
         </div>
-        
+
         <div v-if="error" class="error">{{ error }}</div>
-        
+
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
     </div>
-    
+
     <div v-else class="content-container">
       <div class="header">
-        <h2>Welcome, {{ currentPlayer.name }}!</h2>
+        <h2>Welcome, {{ currentPlayer.name }} !</h2>
         <p>Current Round: {{ currentRound }}</p>
       </div>
-      
+
       <GameInterface :player-id="currentPlayer.id" />
-      
+
       <LadderPrediction
         v-if="showLadderPrediction"
         :player-id="currentPlayer.id"
@@ -140,7 +131,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing);
+  padding: var(--spacing-md);
   background: white;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
