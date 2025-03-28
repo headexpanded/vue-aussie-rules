@@ -15,6 +15,17 @@ export const api = {
     return response.json();
   },
 
+  async checkSession(): Promise<{ isLoggedIn: boolean; userId?: number; username?: string }> {
+    const response = await fetch(`${API_BASE}/check-session`, {
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+            }
+       });
+    if (!response.ok) throw new Error('Failed to check session');
+    return response.json();
+  },
+
   async getCurrentRound(): Promise<number> {
     const response = await fetch(`${API_BASE}/games/current-round`, {
 	credentials: 'include',
@@ -35,6 +46,16 @@ export const api = {
 	});
     if (!response.ok) throw new Error('Failed to get games');
     return response.json();
+  },
+
+  async hasSubmitted(playerId: number, roundId: number): Promise<boolean> {
+    const response = await fetch(`{$API_BASE}/has-submitted?player_id=${playerId}&round_id=${roundId}`, {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      });
+    if (!response.ok) throw new Error('Failed to get submitted status');
+    const data = await response.json();
+    return data.hasSubmitted;
   },
 
   async submitPrediction(prediction: Omit<Prediction, 'id'>): Promise<Prediction> {

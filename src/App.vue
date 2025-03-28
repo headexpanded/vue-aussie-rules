@@ -2,8 +2,11 @@
 import { ref, reactive, computed } from 'vue';
 import type { LoginForm, Player } from './types';
 import { api } from './services/api';
+import { useAuthStore } from './stores/auth';
 import GameInterface from './components/GameInterface.vue';
 import LadderPrediction from './components/LadderPrediction.vue';
+
+const authStore = useAuthStore();
 
 const currentPlayer = ref<Player | null>(null);
 const loginForm = reactive<LoginForm>({
@@ -20,6 +23,22 @@ async function handleLogin() {
     currentRound.value = await api.getCurrentRound();
   } catch (e) {
     error.value = 'Login failed. Please try again.';
+  }
+}
+
+async function checkSession() {
+  try {
+    const sessionData = await api.checkSession();
+    if (sessionData.isLoggedIn && sessionData.userId && sessionData.username) {
+        currentPlayer.value = {
+            id: sessionData.userId,
+            name: sessionData.username,
+            email: ''
+        }
+       currentRound.value = await api.getCurrentRound()
+    }
+  } catch (error) {
+    console.error('Failed to check session:', error);
   }
 }
 
