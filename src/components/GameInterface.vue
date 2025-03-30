@@ -169,6 +169,7 @@ onMounted(loadData)
 }
 
 .stats-section {
+  background: white;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
@@ -178,8 +179,6 @@ onMounted(loadData)
 .stat-card {
   background: white;
   padding: var(--spacing-sm);
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
