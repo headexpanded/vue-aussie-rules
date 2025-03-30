@@ -100,15 +100,16 @@ onMounted(loadData)
         Submit Predictions
       </button>
     </div>
-    <div class="stats-section">
+
+    <div class="stats-header">
       <h2>Player Statistics</h2>
-      <div class="stats-grid">
-        <div v-for="stat in playerStats" :key="stat.player.id" class="stat-card">
-          <h3>{{ stat.player.name }}</h3>
-          <p>Wins: {{ stat.wins }}</p>
-          <p>Losses: {{ stat.losses }}</p>
-          <p>Total: {{ stat.total }}</p>
-        </div>
+    </div>
+    <div class="stats-section">
+      <div v-for="stat in playerStats" :key="stat.player.id" class="stat-card">
+        <h3>{{ stat.player.name }}</h3>
+        <p>Wins: {{ stat.wins }}</p>
+        <p>Losses: {{ stat.losses }}</p>
+        <p>Total: {{ stat.total }}</p>
       </div>
     </div>
   </div>
@@ -124,6 +125,11 @@ onMounted(loadData)
 
 .round-header {
   margin-bottom: var(--spacing-sm);
+  text-align: center;
+}
+
+.stats-header {
+  margin-top: var(--spacing-lg);
   text-align: center;
 }
 
@@ -163,6 +169,9 @@ onMounted(loadData)
 }
 
 .stats-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
   margin-top: var(--spacing-lg);
 }
 
