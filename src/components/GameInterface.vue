@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { Game, PlayerStats } from '@/types'
 import { onMounted, ref, computed } from 'vue'
+import { useAuthStore } from '../stores/auth'
 import { api } from '../services/api'
+
+const authStore = useAuthStore()
 
 const props = defineProps<{
   playerId: number
@@ -33,6 +36,10 @@ function selectPrediction(gameId: number, teamId: number) {
 
 function reset() {
   tempPredictions.value = {}
+}
+
+function logout() {
+  authStore.logout()
 }
 
 const ranking = computed(() => ['Winning!', 'Not winning.', 'Losing like a loser.'])
@@ -101,6 +108,7 @@ onMounted(loadData)
       >
         Submit Predictions
       </button>
+      <button class="btn logout-btn" @click="logout">Logout</button>
     </div>
 
     <div class="stats-header">
@@ -140,7 +148,7 @@ onMounted(loadData)
 }
 
 .stats-header {
-  margin-top: var(--spacing-lg);
+  margin-top: var(--spacing-md);
   text-align: center;
 }
 
@@ -184,7 +192,7 @@ onMounted(loadData)
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  margin-top: var(--spacing-lg);
+  margin-top: var(--spacing-md);
 }
 
 .stat-card {
@@ -216,12 +224,19 @@ h3 {
   font-size: var(--font-size-md);
   min-width: 200px;
   margin-left: var(--spacing-xs);
+  margin-right: var(--spacing-xs);
 }
 
 .reset-btn {
   color: white;
   background-color: red;
   margin-right: var(--spacing-xs);
+}
+
+.logout-btn {
+  color: white;
+  background-color: red;
+  margin-left: var(--spacing-xs);
 }
 
 .submit-btn:disabled {

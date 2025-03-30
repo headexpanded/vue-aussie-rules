@@ -34,7 +34,6 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <h1>AFL Predictions Game</h1>
-
     <div v-if="!authStore.currentPlayer" class="login-card card">
       <h2>Login</h2>
       <form @submit.prevent="handleLogin">
