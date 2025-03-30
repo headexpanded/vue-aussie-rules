@@ -10,7 +10,7 @@ import type {
 
 const isDevelopment = import.meta.env.MODE === 'development'
 const API_BASE = isDevelopment
-  ? 'http://192.168.88.182:3003/rules/api' // Development
+  ? 'http://localhost:3003/rules/api' // Development
   : '/rules/api' // Production
 
 export const api = {
@@ -29,13 +29,13 @@ export const api = {
 
   async checkSession(): Promise<{ isLoggedIn: boolean; userId?: number; username?: string }> {
     const response = await fetch(`${API_BASE}/check-session`, {
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json'
-            }
-       });
-    if (!response.ok) throw new Error('Failed to check session');
-    return response.json();
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (!response.ok) throw new Error('Failed to check session')
+    return response.json()
   },
 
   async getCurrentRound(): Promise<number> {
@@ -61,13 +61,16 @@ export const api = {
   },
 
   async hasSubmitted(playerId: number, roundId: number): Promise<boolean> {
-    const response = await fetch(`{$API_BASE}/has-submitted?player_id=${playerId}&round_id=${roundId}`, {
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      });
-    if (!response.ok) throw new Error('Failed to get submitted status');
-    const data = await response.json();
-    return data.hasSubmitted;
+    const response = await fetch(
+      `{$API_BASE}/has-submitted?player_id=${playerId}&round_id=${roundId}`,
+      {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      },
+    )
+    if (!response.ok) throw new Error('Failed to get submitted status')
+    const data = await response.json()
+    return data.hasSubmitted
   },
 
   async submitPrediction(prediction: Omit<Prediction, 'id'>): Promise<Prediction> {

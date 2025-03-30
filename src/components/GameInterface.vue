@@ -54,11 +54,11 @@ onMounted(loadData)
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="submitError" class="error">{{ submitError }}</div>
 
-    <div class="header">
+    <div class="round-header">
       <h2>Round {{ currentRound }} Games</h2>
     </div>
     <div class="games-grid">
-      <div v-for="game in games" :key="game.id" class="card">
+      <div v-for="game in games" :key="game.id" class="game-card">
         <div class="game-teams">
           <button
             class="btn"
@@ -109,8 +109,8 @@ onMounted(loadData)
   padding: var(--spacing-sm);
 }
 
-.header {
-  margin-bottom: var(--spacing-md);
+.round-header {
+  margin-bottom: var(--spacing-sm);
   text-align: center;
 }
 
@@ -118,12 +118,12 @@ onMounted(loadData)
   display: grid;
   gap: var(--spacing-md);
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
 }
 
 .game-card {
   background: white;
-  padding: var(--spacing-sm);
+  padding: var(--spacing-md);
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -176,7 +176,7 @@ h3 {
 .submit-section {
   display: flex;
   justify-content: center;
-  margin: var(--spacing-md) 0;
+  margin: var(--spacing-sm) 0;
 }
 
 .submit-btn {
