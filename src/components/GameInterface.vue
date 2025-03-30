@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Game, PlayerStats } from '@/types'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { api } from '../services/api'
 
 const props = defineProps<{
@@ -34,6 +34,8 @@ function selectPrediction(gameId: number, teamId: number) {
 function reset() {
   tempPredictions.value = {}
 }
+
+const ranking = computed(() => ['Winning!', 'Not winning.', 'Losing like a loser.'])
 
 async function submitAllPredictions() {
   try {
@@ -105,7 +107,16 @@ onMounted(loadData)
       <h2>Player Statistics</h2>
     </div>
     <div class="stats-section">
-      <div v-for="stat in playerStats" :key="stat.player.id" class="stat-card">
+      <div v-for="(stat, index) in playerStats" :key="stat.player.id" class="stat-card">
+        <h3
+          :class="{
+            winning: index === 0,
+            'not-winning': index === 1,
+            losing: index === 2,
+          }"
+        >
+          {{ ranking[index] }}
+        </h3>
         <h3>{{ stat.player.name }}</h3>
         <p>Wins: {{ stat.wins }}</p>
         <p>Losses: {{ stat.losses }}</p>
@@ -221,5 +232,20 @@ h3 {
 .reset-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.winning {
+  color: green;
+  font-weight: bold;
+}
+
+.not-winning {
+  color: brown;
+  font-weight: bold;
+}
+
+.losing {
+  color: red;
+  font-weight: bold;
 }
 </style>
