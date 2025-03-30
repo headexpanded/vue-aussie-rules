@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const currentRound = ref<number>(0)
 const games = ref<Game[]>([])
+const totalGamesInRound = ref<number>(0)
 const predictions = ref<Record<number, number>>({})
 const tempPredictions = ref<Record<number, number>>({})
 const playerStats = ref<PlayerStats[]>([])
@@ -19,6 +20,7 @@ async function loadData() {
   try {
     currentRound.value = await api.getCurrentRound()
     games.value = await api.getGames(currentRound.value)
+    totalGamesInRound.value = games.value.length
     playerStats.value = await api.getPlayerStats()
   } catch {
     error.value = 'Failed to load game data'
@@ -27,6 +29,10 @@ async function loadData() {
 
 function selectPrediction(gameId: number, teamId: number) {
   tempPredictions.value[gameId] = teamId
+}
+
+function reset() {
+  tempPredictions.value = {}
 }
 
 async function submitAllPredictions() {
@@ -80,9 +86,16 @@ onMounted(loadData)
     </div>
     <div class="submit-section">
       <button
+        class="btn reset-btn"
+        @click="reset"
+        :disabled="Object.keys(tempPredictions).length === 0"
+      >
+        Reset
+      </button>
+      <button
         class="btn btn-primary submit-btn"
         @click="submitAllPredictions"
-        :disabled="Object.keys(tempPredictions).length === 0"
+        :disabled="Object.keys(tempPredictions).length !== totalGamesInRound"
       >
         Submit Predictions
       </button>
@@ -183,9 +196,21 @@ h3 {
   padding: var(--spacing-sm) var(--spacing-lg);
   font-size: var(--font-size-md);
   min-width: 200px;
+  margin-left: var(--spacing-xs);
+}
+
+.reset-btn {
+  color: white;
+  background-color: red;
+  margin-right: var(--spacing-xs);
 }
 
 .submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reset-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
