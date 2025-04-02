@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { Game, PlayerStats } from '@/types'
-import { onMounted, ref, computed } from 'vue'
+import type { Game, PlayerStats, Team } from '@/types'
+import { onMounted, ref, computed, watchEffect } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { api } from '../services/api'
+import { differenceInDays } from 'date-fns'
 
 const authStore = useAuthStore()
 
@@ -16,6 +17,7 @@ const totalGamesInRound = ref<number>(0)
 const predictions = ref<Record<number, number>>({})
 const tempPredictions = ref<Record<number, number>>({})
 const playerStats = ref<PlayerStats[]>([])
+const hasSubmitted = ref<boolean>(false)
 const error = ref<string>('')
 const submitError = ref<string>('')
 
@@ -44,6 +46,20 @@ function logout() {
 
 const ranking = computed(() => ['Winning!', 'Not winning.', 'Losing like a loser.'])
 
+const daysSinceLastEssendonFinalsWin = computed(() => {
+	const lastWinDate = new Date(2004, 8, 4);
+	return differenceInDays(new Date(), lastWinDate);
+});
+
+const buttonLabel = (team?: Team): string => {
+	if (!team) return 'Unknown team';
+	if (team.name === 'Essidin') return `${daysSinceLastEssendonFinalsWin.value}`;
+	if (team.name === 'Mighty Tigers') return '18thmond';
+	if (team.name === 'Smellbum') return 'MelbOwen';
+	if (team.name === 'Mighty Lions') return 'The Premiers';
+	return team.name;
+};
+
 async function submitAllPredictions() {
   try {
     submitError.value = ''
@@ -60,6 +76,21 @@ async function submitAllPredictions() {
     submitError.value = 'Failed to submit predictions'
   }
 }
+
+const checkIfSubmitted = async () => {
+    try {
+        submitError.value = ''
+        hasSubmitted.value = await api.hasSubmitted(props.playerId, currentRound.value)
+    } catch {
+        hasSubmitted.value = false;
+    }
+}
+
+watchEffect(() => {
+    if(currentRound.value) {
+        checkIfSubmitted();
+    }
+});
 
 onMounted(loadData)
 </script>
@@ -80,7 +111,7 @@ onMounted(loadData)
             :class="{ 'btn-primary': tempPredictions[game.id] === game.team1_id }"
             @click="selectPrediction(game.id, game.team1_id)"
           >
-            {{ game.team1?.name }}
+            {{ buttonLabel(game.team1) }}
           </button>
           <span>vs</span>
           <button
@@ -88,7 +119,7 @@ onMounted(loadData)
             :class="{ 'btn-primary': tempPredictions[game.id] === game.team2_id }"
             @click="selectPrediction(game.id, game.team2_id)"
           >
-            {{ game.team2?.name }}
+            {{ buttonLabel(game.team2) }}
           </button>
         </div>
       </div>
@@ -104,7 +135,7 @@ onMounted(loadData)
       <button
         class="btn btn-primary submit-btn"
         @click="submitAllPredictions"
-        :disabled="Object.keys(tempPredictions).length !== totalGamesInRound"
+        :disabled="hasSubmitted || Object.keys(tempPredictions).length !== totalGamesInRound"
       >
         Submit Predictions
       </button>
