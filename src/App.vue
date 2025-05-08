@@ -23,7 +23,7 @@ const showLadderPrediction = computed(() => {
 })
 
 const ladderPredictionRound = computed(() => {
-  return currentRound.value === 8 ? 8 : 16
+  return currentRound.value === 8
 })
 
 onMounted(() => {
@@ -61,11 +61,6 @@ onMounted(() => {
 
       <GameInterface :player-id="authStore.currentPlayer.id" />
 
-      <LadderPrediction
-        v-if="showLadderPrediction"
-        :player-id="authStore.currentPlayer.id"
-        :round-number="ladderPredictionRound"
-      />
     </div>
   </div>
 </template>

@@ -4,6 +4,8 @@ import { onMounted, ref, computed, watchEffect } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { api } from '../services/api'
 import { differenceInDays } from 'date-fns'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 
 const authStore = useAuthStore()
 
@@ -20,6 +22,9 @@ const playerStats = ref<PlayerStats[]>([])
 const hasSubmitted = ref<boolean>(false)
 const error = ref<string>('')
 const submitError = ref<string>('')
+const notify = () => {
+    toast.success('Your tips are in!', {"theme": "colored", "position": "top-center", "transition": "slide"})
+};
 
 async function loadData() {
   try {
@@ -44,7 +49,7 @@ function logout() {
   authStore.logout()
 }
 
-const ranking = computed(() => ['Winning!', 'Not winning.', 'Losing like a loser.'])
+const ranking = computed(() => ['Winning!', 'Not winning.', 'Failing like Failton.'])
 
 const daysSinceLastEssendonFinalsWin = computed(() => {
 	const lastWinDate = new Date(2004, 8, 4);
@@ -55,7 +60,9 @@ const buttonLabel = (team?: Team): string => {
 	if (!team) return 'Unknown team';
 	if (team.name === 'Essidin') return `${daysSinceLastEssendonFinalsWin.value}`;
 	if (team.name === 'Mighty Tigers') return '18thmond';
-	if (team.name === 'Smellbum') return 'MelbOwen';
+	if (team.name === 'Smellbum') return 'Shemons';
+	if (team.name === 'Wet Toast') return 'Worst Coast';
+	if (team.name === 'Failmantle') return 'Jokemantle';
 	if (team.name === 'Mighty Lions') return 'The Premiers';
 	return team.name;
 };
@@ -71,6 +78,8 @@ async function submitAllPredictions() {
       })
     }
     predictions.value = { ...tempPredictions.value }
+    hasSubmitted.value = true;
+    notify();
     await loadData() // Reload stats
   } catch {
     submitError.value = 'Failed to submit predictions'
