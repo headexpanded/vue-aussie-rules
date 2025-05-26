@@ -32,6 +32,7 @@ async function loadData() {
     games.value = await api.getGames(currentRound.value)
     totalGamesInRound.value = games.value.length
     playerStats.value = await api.getPlayerStats()
+    checkIfSubmitted()
   } catch {
     error.value = 'Failed to load game data'
   }
@@ -49,7 +50,7 @@ function logout() {
   authStore.logout()
 }
 
-const ranking = computed(() => ['Winning!', 'Not winning.', 'Failing like Failton.'])
+const ranking = computed(() => ['It\'s only May.', 'Going alright.', 'Not quite, eh?'])
 
 const daysSinceLastEssendonFinalsWin = computed(() => {
 	const lastWinDate = new Date(2004, 8, 4);
@@ -64,6 +65,11 @@ const buttonLabel = (team?: Team): string => {
 	if (team.name === 'Wet Toast') return 'Worst Coast';
 	if (team.name === 'Failmantle') return 'Jokemantle';
 	if (team.name === 'Mighty Lions') return 'The Premiers';
+	if (team.name === 'Swines') return 'Shitney';
+	if (team.name === 'Whoreborn') return 'Flopthorn';
+	if (team.name === 'Boganwood') return 'Magpiss';
+	if (team.name === 'The Orange Team') return 'Dwarfs';
+	if (team.name === 'Geewrong') return 'Geebung';
 	return team.name;
 };
 
