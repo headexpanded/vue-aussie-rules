@@ -161,6 +161,7 @@ onMounted(loadData)
       <h2>Player Statistics</h2>
     </div>
     <div class="stats-section">
+     <div class="stats-grid">
       <div v-for="(stat, index) in playerStats" :key="stat.player.id" class="stat-card">
         <h3
           :class="{
@@ -176,6 +177,7 @@ onMounted(loadData)
         <p>Losses: {{ stat.losses }}</p>
         <p>Total: {{ stat.total }}</p>
       </div>
+     </div>
     </div>
   </div>
 </template>
@@ -234,11 +236,25 @@ onMounted(loadData)
 }
 
 .stats-section {
-  background: white;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
   margin-top: var(--spacing-md);
+}
+
+.stats-grid {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
 }
 
 .stat-card {
