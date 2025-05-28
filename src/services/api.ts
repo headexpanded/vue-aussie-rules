@@ -11,7 +11,7 @@ import type {
 const isDevelopment = import.meta.env.MODE === 'development'
 const API_BASE = isDevelopment
   ? 'http://localhost:3003/rules/api' // Development
-  : '/rules/api' // Production
+  : '/rules/api';		      // Production
 
 export const api = {
   async login(form: LoginForm): Promise<Player> {
