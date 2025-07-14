@@ -61,8 +61,7 @@ export const api = {
   },
 
   async hasSubmitted(playerId: number, roundId: number): Promise<boolean> {
-    const response = await fetch(
-      `{$API_BASE}/has-submitted?player_id=${playerId}&round_id=${roundId}`,
+    const response = await fetch(`${API_BASE}/has-submitted?player_id=${playerId}&round_id=${roundId}`,
       {
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

@@ -50,7 +50,7 @@ function logout() {
   authStore.logout()
 }
 
-const ranking = computed(() => ['It\'s only May.', 'Going alright.', 'Not quite, eh?'])
+const ranking = computed(() => ['Choke incoming.', 'Going alright.', 'In the 8.'])
 
 const daysSinceLastEssendonFinalsWin = computed(() => {
 	const lastWinDate = new Date(2004, 8, 4);
@@ -65,11 +65,14 @@ const buttonLabel = (team?: Team): string => {
 	if (team.name === 'Wet Toast') return 'Worst Coast';
 	if (team.name === 'Failmantle') return 'Jokemantle';
 	if (team.name === 'Mighty Lions') return 'The Premiers';
-	if (team.name === 'Swines') return 'Shitney';
-	if (team.name === 'Whoreborn') return 'Flopthorn';
+	if (team.name === 'Swines') return 'HomoSydneySexuals';
 	if (team.name === 'Boganwood') return 'Magpiss';
 	if (team.name === 'The Orange Team') return 'Dwarfs';
 	if (team.name === 'Geewrong') return 'Geebung';
+	if (team.name === 'Pooort') return 'Pisspoort';
+	if (team.name === 'St Failda') return 'St Lolda';
+	if (team.name === 'Failton') return 'Carltoon';
+	if (team.name === 'Crom') return 'Faildelaide';
 	return team.name;
 };
 
