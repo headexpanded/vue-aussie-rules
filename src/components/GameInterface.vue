@@ -50,7 +50,7 @@ function logout() {
   authStore.logout()
 }
 
-const ranking = computed(() => ['Choke incoming.', 'Going alright.', 'In the 8.'])
+const ranking = computed(() => ['2 extra games.', 'Legit.', 'Pick 1.'])
 
 const daysSinceLastEssendonFinalsWin = computed(() => {
 	const lastWinDate = new Date(2004, 8, 4);
@@ -61,18 +61,19 @@ const buttonLabel = (team?: Team): string => {
 	if (!team) return 'Unknown team';
 	if (team.name === 'Essidin') return `${daysSinceLastEssendonFinalsWin.value}`;
 	if (team.name === 'Mighty Tigers') return '18thmond';
-	if (team.name === 'Smellbum') return 'Shemons';
+	if (team.name === 'Smellbum') return 'Smellbum Lemons';
 	if (team.name === 'Wet Toast') return 'Worst Coast';
-	if (team.name === 'Failmantle') return 'Jokemantle';
-	if (team.name === 'Mighty Lions') return 'The Premiers';
-	if (team.name === 'Swines') return 'HomoSydneySexuals';
-	if (team.name === 'Boganwood') return 'Magpiss';
-	if (team.name === 'The Orange Team') return 'Dwarfs';
-	if (team.name === 'Geewrong') return 'Geebung';
+	if (team.name === 'Failmantle') return 'Chokemantle';
+	if (team.name === 'Mighty Lions') return 'THE PREMIERS';
+	if (team.name === 'Swines') return 'Shitney';
+	if (team.name === 'Boganwood') return 'Straightsetswood';
+	if (team.name === 'The Orange Team') return 'GWShit';
+	if (team.name === 'Geewrong') return 'Straightsetslong';
 	if (team.name === 'Pooort') return 'Pisspoort';
-	if (team.name === 'St Failda') return 'St Lolda';
-	if (team.name === 'Failton') return 'Carltoon';
-	if (team.name === 'Crom') return 'Faildelaide';
+	if (team.name === 'St Failda') return 'St Failda';
+	if (team.name === 'Whoreborn') return 'Shitethorn';
+	if (team.name === 'Crom') return 'Jokelaide';
+	if (team.name === 'Fold Coast') return 'Participation Medal Coast';
 	return team.name;
 };
 
@@ -119,7 +120,7 @@ onMounted(loadData)
     <div v-if="submitError" class="error">{{ submitError }}</div>
 
     <div class="round-header">
-      <h2>Round {{ currentRound }} Games</h2>
+      <h2>Q/E Finals</h2>
     </div>
     <div class="games-grid">
       <div v-for="game in games" :key="game.id" class="game-card">
@@ -177,8 +178,8 @@ onMounted(loadData)
         </h3>
         <h3>{{ stat.player.name }}</h3>
         <p>Wins: {{ stat.wins }}</p>
-        <p>Losses: {{ stat.losses }}</p>
-        <p>Total: {{ stat.total }}</p>
+	<p>Losses: {{ stat.losses }}</p>
+	<p>Total: {{ stat.total }}</p>
       </div>
      </div>
     </div>
